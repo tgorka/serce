@@ -2,7 +2,7 @@
   <configuration default="false" name="emulate ios" type="PhoneGap" factoryName="PhoneGap/Cordova" singleton="true">
     <option name="myExecutable" value="/usr/local/bin/ionic" />
     <option name="myWorkDir" value="$PROJECT_DIR$" />
-    <option name="myCommand" value="emulate" />
+    <option name="myCommand" value="run" />
     <option name="myPlatform" value="ios" />
     <option name="hasTarget" value="false" />
     <option name="target" value="" />

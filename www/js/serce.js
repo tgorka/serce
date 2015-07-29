@@ -6,7 +6,7 @@
 angular.module('serce', ['ionic', 'ui.router', 'serceControllers'])
 
 
-.config(['$stateProvider', function($stateProvider) {
+/*.config(['$stateProvider', function($stateProvider) {
     // Routing
     $stateProvider.reloadOnSearch = true;
     $stateProvider.caseInsensitiveMatch = true;
@@ -15,13 +15,8 @@ angular.module('serce', ['ionic', 'ui.router', 'serceControllers'])
             url:'/',
             templateUrl: 'index.html',
             controller : 'HomeCtrl'
-        })
-        .state('clicked', {
-            url:'/clicked',
-            templateUrl: 'html/clicked.html',
-            controller : 'ClickedCtrl'
         });
-}])
+}])*/
 
 
 .run(['$ionicPlatform', function($ionicPlatform) {
