@@ -1,37 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <head>
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above-->
-    <link href="css/ionic.app.css" rel="stylesheet">
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Polskie Serce</title>
+        <link href="lib/ionic/css/ionic.css" rel="stylesheet">
 
-    <link href="css/style.css" rel="stylesheet">
+        <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above-->
+        <link href="css/ionic.app.css" rel="stylesheet">
 
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
+        <link href="css/style.css" rel="stylesheet">
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
+        <!-- ionic/angularjs js -->
+        <script src="lib/ionic/js/ionic.bundle.js"></script>
+        <script src="lib/ionic/js/angular/i18n/angular-locale_pl-pl.js"></script>
 
-    <!-- serce app's js -->
-    <script src="js/serce.js"></script>
-    <script src="js/controller.js"></script>
+        <!-- cordova script (this will be a 404 during development) -->
+        <script src="cordova.js"></script>
 
-  </head>
-  <body ng-app="serce">
+        <!-- serce app's js -->
+        <script src="js/serce.js"></script>
+        <script src="js/controller.js"></script>
 
-    <ion-pane class="background-red">
-      <!--<ion-header-bar class="bar-stable">
-        <h1 class="title">Ionic Blank Starter</h1>
-      </ion-header-bar>-->
-      <ion-content ng-controller="HomeCtrl">
-          <div ng-hide="isClicked" class="margin-20" ng-controller="ClickingCtrl" ng-include="'html/clicking_content.html'"></div>
-          <div ng-show="isClicked" class="margin-20" ng-controller="ClickedCtrl" ng-include="'html/clicked_content.html'"></div>
-      </ion-content>
-    </ion-pane>
-  </body>
+    </head>
+    <body ng-app="serce">
+
+        <ion-side-menus enable-menu-with-back-views="true">
+
+            <ion-side-menu-content>
+                <!-- Main content, usually <ion-nav-view> -->
+                <ion-nav-bar class="background-red" >
+                    <ion-nav-buttons side="right">
+                        <!-- Toggle right side menu -->
+                        <button menu-toggle="right" class="button button-icon icon ion-navicon"></button>
+                    </ion-nav-buttons>
+                </ion-nav-bar>
+
+                <ion-nav-view class=""></ion-nav-view>
+
+            </ion-side-menu-content>
+
+            <!-- Left menu -->
+            <ion-side-menu side="right">
+                <ion-content class="background-red">
+                    <ion-list>
+                        <ion-item class="background-red" menu-close>
+                            <a class="button button-clear" ui-sref="home"></a>
+                        </ion-item>
+                        <ion-item class="background-red" menu-close>
+                            <a class="button button-clear" style="max-height: 100%; text-align: left;" ui-sref="statistics">
+                                Statystyki<br>
+                                {{statistics.week | number}} w tygodniu<br>
+                                {{statistics.month | number}} w miesiącu
+                            </a>
+                        </ion-item>
+                        <ion-item class="background-red" menu-close>
+                            <a class="button button-clear" ui-sref="help">Pomóż nam</a>
+                        </ion-item>
+                        <ion-item class="background-red" menu-close href="#/app/browse">
+                            <a ng-if="!alert" class="button button-clear" ui-sref="alert">Ustaw przypomnienie</a>
+                            <a ng-if="alert" class="button button-clear" ui-sref="alert">Przypomnienie o {{alert | date: format: shortTime}}</a>
+                        </ion-item>
+                        <ion-item class="background-red" menu-close>
+                            <a class="button button-clear" ui-sref="contact">Kontakt</a>
+                        </ion-item>
+                        <ion-item class="background-red" menu-close>
+                            <a class="button button-clear" ui-sref="about">O nas</a>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+            </ion-side-menu>
+
+        </ion-side-menus>
+
+    </body>
 </html>

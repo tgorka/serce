@@ -59,6 +59,7 @@ body {
     font-size: xx-large;
 }
 
+.background-red > .item-content,
 .background-red {
     background-color: #e30016;
 }
@@ -73,4 +74,8 @@ body {
 
 .normal-line-height {
     line-height: normal;
+}
+
+.no-border {
+    border: none;
 }

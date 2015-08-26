@@ -1,1 +1,81 @@
 /* Empty. Add your own CSS if you like */
+
+@font-face {
+    font-family: 'Source Serif Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../fonts/SourceSerifPro-Regular.ttf?v=1.0.1") format("truetype"), url("../fonts/SourceSerifPro-Regular.woff?v=1.0.1") format("woff"), url("../fonts/SourceSerifPro-Regular.woff2?v=1.0.1") format("woff2");
+}
+
+@font-face {
+    font-family: 'Source Serif Pro';
+    font-style: normal;
+    font-weight: 600;
+    src: url("../fonts/SourceSerifPro-Semibold.ttf?v=1.0.1") format("truetype"), url("../fonts/SourceSerifPro-Semibold.woff?v=1.0.1") format("woff"), url("../fonts/SourceSerifPro-Semibold.woff2?v=1.0.1") format("woff2");
+}
+
+@font-face {
+    font-family: 'Source Serif Pro';
+    font-style: normal;
+    font-weight: 700;
+    src: url("../fonts/SourceSerifPro-Bold.ttf?v=1.0.1") format("truetype"), url("../fonts/SourceSerifPro-Bold.woff?v=1.0.1") format("woff"), url("../fonts/SourceSerifPro-Bold.woff2?v=1.0.1") format("woff2");
+}
+
+body {
+    font-family: "Source Serif Pro";
+    font-weight: 400;
+}
+
+.semi-bold {
+    font-weight: 600;
+}
+
+.bold {
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
+.margin-20 {
+    margin: 20px;
+}
+
+.padding-20 {
+    padding: 20px;
+}
+
+.font-xx-large {
+    font-size: xx-large;
+}
+
+.background-red > .item-content,
+.background-red {
+    background-color: #e30016;
+}
+
+.background-white {
+    background-color: #ffffff;
+}
+
+.full-rounded {
+    border-radius: 50%;
+}
+
+.normal-line-height {
+    line-height: normal;
+}
+
+.no-border {
+    border: none;
+}

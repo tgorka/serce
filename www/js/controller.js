@@ -2,23 +2,41 @@
 angular.module('serceControllers', [])
 
 
-.controller('HomeCtrl', ['$scope', '$http', function($scope, $http) {
-    $scope.isClicked = false;
-    $scope.count = 0;
-
+.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$state',
+            function($scope, $rootScope, $http, $state) {
     $scope.click = function() {
-        $scope.count++;
-        $scope.isClicked = true;
-        console.log('click voted!!!');
+        $rootScope.isVoted = true;
+        $rootScope.count++;
+        for (var statistic in $rootScope.statistics) {
+            $rootScope.statistics[statistic]++;
+        }
+        //TODO: call server vor next voting
+        $state.go('clicked');
     };
 }])
 
-.controller('ClickingCtrl', ['$scope', '$window', '$http',
-        function($scope, $window, $http) {
-    // TODO: implement me !!
+.controller('ClickedCtrl', ['$scope', function($scope) {
+    // empty controller
 }])
 
-.controller('ClickedCtrl', ['$scope', '$window', '$http',
-        function($scope, $window, $http) {
-    // TODO: implement me !!
-}]);
+.controller('StatisticsCtrl', ['$scope', function($scope) {
+    // TODO: implement me!!
+}])
+
+.controller('AlertCtrl', ['$scope', function($scope) {
+    // TODO: implement me!!
+}])
+
+.controller('ContactCtrl', ['$scope', function($scope) {
+    // TODO: implement me!!
+}])
+
+.controller('AboutCtrl', ['$scope', function($scope) {
+    // TODO: implement me!!
+}])
+
+.controller('HelpCtrl', ['$scope', function($scope) {
+    // TODO: implement me!!
+}])
+
+;
