@@ -81,7 +81,7 @@ angular.module('serceControllers', [])
                         $rootScope.userStatistics[key]++;
                     });
 
-                    $state.go('serce.clicked');
+                    $state.go('clicked');
                 });
 
                 // global statistics in sync
@@ -100,7 +100,7 @@ angular.module('serceControllers', [])
 
                 });*/
             } else {
-                $state.go('serce.clicked');
+                $state.go('clicked');
             }
         }
     };

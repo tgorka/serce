@@ -130,7 +130,7 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
             $rootScope.loaded = true;
             if (!$rootScope.isNotVoted()) {
                 // go to clicked at the initial time if already clicked
-                $state.go('serce.clicked');
+                $state.go('clicked');
             }
         });
     });
