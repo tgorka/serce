@@ -5,10 +5,13 @@ angular.module('serceControllers', [])
 .controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$state',
             function($scope, $rootScope, $http, $state) {
 
-    if (!$rootScope.isNotVoted()) {
-        // go to clicked at the initial time if already clicked
-        $state.go('clicked');
-    }
+    $scope.$on('$ionicView.enter', function() {
+        // Code you want executed every time view is opened
+        if (!$rootScope.isNotVoted()) {
+            // go to clicked at the initial time if already clicked
+            $state.go('clicked');
+        }
+    });
 
     $scope.click = function() {
         if ($rootScope.loaded) {
@@ -78,7 +81,7 @@ angular.module('serceControllers', [])
                         $rootScope.userStatistics[key]++;
                     });
 
-                    $state.go('clicked');
+                    $state.go('serce.clicked');
                 });
 
                 // global statistics in sync
@@ -97,7 +100,7 @@ angular.module('serceControllers', [])
 
                 });*/
             } else {
-                $state.go('clicked');
+                $state.go('serce.clicked');
             }
         }
     };

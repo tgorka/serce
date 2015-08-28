@@ -17,7 +17,7 @@ Date.prototype.getWeek = function(weekStart) {
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'serce' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('serce', ['ionic', 'ui.router', 'firebase', 'serceControllers'])
+angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
 
 
 .run(['$ionicPlatform', '$rootScope', '$state', function($ionicPlatform, $rootScope, $state) {
@@ -38,7 +38,6 @@ angular.module('serce', ['ionic', 'ui.router', 'firebase', 'serceControllers'])
         } else {
             $rootScope.alert = Date.parse(alertStr);
         }
-
 
         //var device = ionic.Platform.device();
         //$rootScope.uuid = device.uuid;
@@ -131,53 +130,76 @@ angular.module('serce', ['ionic', 'ui.router', 'firebase', 'serceControllers'])
             $rootScope.loaded = true;
             if (!$rootScope.isNotVoted()) {
                 // go to clicked at the initial time if already clicked
-                $state.go('clicked');
+                $state.go('serce.clicked');
             }
         });
-
     });
 }])
 
-.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
-    // not working in dev mode (need to enable server url rewrite mode)
+.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    // not working in mobile (need to enable server url rewrite mode)
     //$locationProvider.html5Mode(true);
     //$locationProvider.hashPrefix('!');
-    $stateProvider.reloadOnSearch = true;
-    $stateProvider.caseInsensitiveMatch = true;
+    //$stateProvider.reloadOnSearch = true;
+    //$stateProvider.caseInsensitiveMatch = true;
     $stateProvider
             .state('home', {
                 url: '/',
-                templateUrl: 'html/home.html',
-                controller: 'HomeCtrl'
+                views: {
+                    'menuContent': {
+                        templateUrl: 'html/home.html',
+                        controller: 'HomeCtrl'
+                    }
+                }
             })
             .state('clicked', {
                 url: '/clicked',
-                templateUrl: 'html/clicked.html',
-                controller: 'ClickedCtrl'
+                views: {
+                    'menuContent': {
+                        templateUrl: 'html/clicked.html',
+                        controller: 'ClickedCtrl'
+                    }
+                }
             })
             .state('statistics', {
                 url: '/statistics',
-                templateUrl: 'html/statistics.html',
-                controller: 'StatisticsCtrl'
+                views: {
+                    'menuContent': {
+                        templateUrl: 'html/statistics.html',
+                        controller: 'StatisticsCtrl'
+                    }
+                }
             })
             .state('help', {
                 url: '/help',
-                templateUrl: 'html/help.html',
-                controller: 'HelpCtrl'
+                views: {
+                    'menuContent': {
+                        templateUrl: 'html/help.html',
+                        controller: 'HelpCtrl'
+                    }
+                }
             })
             .state('alert', {
                 url: '/alert',
-                templateUrl: 'html/alert.html',
-                controller: 'AlertCtrl'
+                views: {
+                    'menuContent': {
+                        templateUrl: 'html/alert.html',
+                        controller: 'AlertCtrl'
+                    }
+                }
             })
             .state('about', {
                 url: '/about',
-                templateUrl: 'html/about.html',
-                controller: 'AboutCtrl'
+                views: {
+                    'menuContent': {
+                        templateUrl: 'html/about.html',
+                        controller: 'AboutCtrl'
+                    }
+                }
             })
     ;
 
     $urlRouterProvider.otherwise("/");
-})
+}])
 
 ;
