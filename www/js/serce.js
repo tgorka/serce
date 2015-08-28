@@ -20,7 +20,7 @@ Date.prototype.getWeek = function(weekStart) {
 angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
 
 
-.run(['$ionicPlatform', '$rootScope', '$state', function($ionicPlatform, $rootScope, $state) {
+.run(['$ionicPlatform', '$rootScope', '$state', 'statisticsService', 'configService', function($ionicPlatform, $rootScope, $state, statisticsService, configService) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -31,22 +31,8 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
             StatusBar.styleDefault();
         }
 
-        // alert for a notification
-        var alertStr = localStorage.getItem('alert');
-        if (!alertStr) {
-            $rootScope.alert = null;
-        } else {
-            $rootScope.alert = Date.parse(alertStr);
-        }
-
-        //var device = ionic.Platform.device();
-        //$rootScope.uuid = device.uuid;
-        $rootScope.loaded = false;
-        $rootScope.uuid = localStorage.getItem('uuid');
-        if (!$rootScope.uuid) {
-            $rootScope.uuid = uuid.v4();
-            localStorage.setItem('uuid', $rootScope.uuid);
-        }
+        // configs
+        $rootScope.config = configService;
 
         $rootScope.statistics = {
             day:   0,
@@ -63,77 +49,140 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
             total: 0
         };
 
-        $rootScope.isNotVoted = function() {
-            return $rootScope.userStatistics.day == 0;
+        $rootScope.isVoted = function() {
+            return $rootScope.userStatistics.day > 0;
         };
 
-        var updateStatisticsFunction = function(url, variable) {
-            var statisticsRef = new Firebase(url);
-            statisticsRef.on("child_changed", function(snap) {
+        statisticsService.updateShortStatistics();
+    });
+
+}])
+
+.factory('configService', ['$rootScope', function($rootScope) {
+    // alert for a notification
+    var alertStr = localStorage.getItem('alert');
+    var alert = (!alertStr) ? null : Date.parse(alertStr);
+
+    //var device = ionic.Platform.device();
+    //var uuid = device.uuid;
+    var uuid = localStorage.getItem('uuid');
+    if (!uuid) {
+        uuid = uuid.v4();
+        localStorage.setItem('uuid', uuid);
+    }
+    return {
+        uuid: uuid,
+        alert: alert,
+        setAlert: function(newAlert) {
+            alert = newAlert;
+            localStorage.setItem('alert', newAlert.toISOString());
+        }
+    }
+}])
+
+.factory('statisticsService', ['$rootScope', 'configService', function($rootScope, configService) {
+    var today, uuid;
+    var updateToday = function() {
+        today = new Date();
+    };
+
+    var updateStatisticsFunction = function(url, variable) {
+        var statisticsRef = new Firebase(url);
+        statisticsRef.on("child_changed", function(snap) {
+            $rootScope.statistics[variable] = snap.val().value;
+        });
+        statisticsRef.once("value", function(snap) {
+            if (snap.val() != null) {
                 $rootScope.statistics[variable] = snap.val().value;
-            });
-            statisticsRef.once("value", function(snap) {
-                if (snap.val() != null) {
-                    $rootScope.statistics[variable] = snap.val().value;
-                }
-            });
-        };
-        var updateUserStatisticsFunction = function(url, variable, callback) {
-            var statisticsRef = new Firebase(url);
-            statisticsRef.on("child_changed", function(snap) {
-                $rootScope.userStatistics[variable] = snap.val();
-            });
-            statisticsRef.once("value", function(snap) {
-                if (snap.val() != null) {
-                    $rootScope.userStatistics[variable] = snap.val();
-                }
-                if (callback) {
-                    callback();
-                }
-            });
-        };
-
-        var today = new Date();
-
-        // global statistics
+            } else {
+                $rootScope.statistics[variable] = 0;
+            }
+        });
+    };
+    var updateUserStatisticsFunction = function(url, variable, callback) {
+        var statisticsRef = new Firebase(url);
+        //statisticsRef.on("child_changed", function(snap) {
+        //    $rootScope.userStatistics[variable] = snap.val();
+        //});
+        statisticsRef.once("value", function(snap) {
+            if (snap.val() != null) {
+                $rootScope.userStatistics[variable] = snap.val().value;
+            } else {
+                $rootScope.userStatistics[variable] = 0;
+            }
+            if (callback) {
+                callback();
+            }
+        });
+    };
+    var userStatistics = function() {
+        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid + '/statistics/total', 'total');
+        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+                configService.uuid + '/statistics/years/' + today.getFullYear(),
+            'year');
+        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid + '/statistics/months/' + today.getFullYear() +
+            '/' + (today.getMonth() + 1), 'month');
+        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid + '/statistics/weeks/' + today.getFullYear() +
+            '/' + (today.getWeek(1) + 1), 'week');
+        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid + '/statistics/days/' + today.getFullYear() +
+            '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day');
+    };
+    var globalStatistics = function() {
         updateStatisticsFunction('https://serce.firebaseio.com/' +
             '/statistics/total', 'total');
         updateStatisticsFunction('https://serce.firebaseio.com/' +
-            '/statistics/years/' + today.getFullYear(),
-                'year');
+            '/statistics/years/' + today.getFullYear(), 'year');
         updateStatisticsFunction('https://serce.firebaseio.com/' +
             '/statistics/months/' + today.getFullYear() +
-                '/' + (today.getMonth() + 1), 'month');
+            '/' + (today.getMonth() + 1), 'month');
         updateStatisticsFunction('https://serce.firebaseio.com/' +
             '/statistics/days/' + today.getFullYear() +
-                '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day');
+            '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day');
         updateStatisticsFunction('https://serce.firebaseio.com/' +
             '/statistics/weeks/' + today.getFullYear() +
-                '/' + (today.getWeek(1) + 1), 'week');
+            '/' + (today.getWeek(1) + 1), 'week');
+    };
+    var shortStatistics = function() {
+        updateStatisticsFunction('https://serce.firebaseio.com/' +
+            '/statistics/days/' + today.getFullYear() +
+            '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day');
+        updateStatisticsFunction('https://serce.firebaseio.com/' +
+            '/statistics/months/' + today.getFullYear() +
+            '/' + (today.getMonth() + 1), 'month');
+        updateStatisticsFunction('https://serce.firebaseio.com/' +
+            '/statistics/weeks/' + today.getFullYear() +
+            '/' + (today.getWeek(1) + 1), 'week');
+    };
 
-        // user statistics
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            $rootScope.uuid + '/statistics/total', 'total');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            $rootScope.uuid + '/statistics/years/' + today.getFullYear(),
-                'year');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            $rootScope.uuid + '/statistics/months/' + today.getFullYear() +
-                '/' + (today.getMonth() + 1), 'month');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            $rootScope.uuid + '/statistics/weeks/' + today.getFullYear() +
-                '/' + (today.getWeek(1) + 1), 'week');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            $rootScope.uuid + '/statistics/days/' + today.getFullYear() +
-                '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day',
-                    function() {
-            $rootScope.loaded = true;
-            if (!$rootScope.isNotVoted()) {
-                // go to clicked at the initial time if already clicked
-                $state.go('clicked');
-            }
-        });
-    });
+    return {
+        updateAllStatistics: function() {
+            updateToday();
+            globalStatistics();
+            userStatistics();
+        },
+        updateUserStatistics: function() {
+            updateToday();
+            userStatistics();
+        },
+        updateGlobalStatistics: function() {
+            updateToday();
+            globalStatistics();
+        },
+        updateShortStatistics: function() {
+            updateToday();
+            shortStatistics();
+        },
+        updateUserDayStatistics: function(callback) {
+            updateToday();
+            updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+                configService.uuid + '/statistics/days/' + today.getFullYear() +
+                '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day', callback);
+        }
+    }
 }])
 
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {

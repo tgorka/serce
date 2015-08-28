@@ -2,25 +2,29 @@
 angular.module('serceControllers', [])
 
 
-.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$state',
-            function($scope, $rootScope, $http, $state) {
+.controller('HomeCtrl', ['$scope', '$rootScope', '$http', '$state', 'statisticsService', 'configService',
+            function($scope, $rootScope, $http, $state, statisticsService, configService) {
 
     $scope.$on('$ionicView.enter', function() {
-        // Code you want executed every time view is opened
-        if (!$rootScope.isNotVoted()) {
-            // go to clicked at the initial time if already clicked
-            $state.go('clicked');
-        }
+        // update statistics
+        $scope.loaded = false;
+        statisticsService.updateUserDayStatistics(function() {
+            $scope.loaded = true;
+            if ($rootScope.isVoted()) {
+                // go to clicked at the initial time if already clicked
+                $state.go('clicked');
+            }
+        });
     });
 
     $scope.click = function() {
-        if ($rootScope.loaded) {
-            if ($rootScope.isNotVoted()) {
+        if ($scope.loaded) {
+            if (!$rootScope.isVoted()) {
 
                 var today = new Date();
                 var incrementFunction = function(value) {
                     return {
-                        lastUser: $rootScope.uuid,
+                        lastUser: configService.uuid,
                         lastDate: /*Firebase.ServerValue.TIMESTAMP,*/today.toISOString(),
                         lastYear: today.getFullYear().toString(),
                         lastMonth: (today.getMonth() + 1).toString(),
@@ -45,7 +49,7 @@ angular.module('serceControllers', [])
 
                 // call user vote
                 var userRef = new Firebase('https://serce.firebaseio.com/users/' +
-                $rootScope.uuid + '/votes/' + today.getFullYear() + '/' +
+                configService.uuid + '/votes/' + today.getFullYear() + '/' +
                 (today.getMonth() + 1) + '/' + today.getDate());
                 userRef.set(today.toISOString(), function() {
 
@@ -62,15 +66,15 @@ angular.module('serceControllers', [])
                             transaction(incrementFunction);
 
                     // user statistics
-                    (new Firebase('https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/total')).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/total')).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/years/' + today.getFullYear())).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/years/' + today.getFullYear())).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1))).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1))).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/days/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate())).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/days/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate())).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/weeks/' + today.getFullYear() + '/' + (today.getWeek(1) + 1))).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/weeks/' + today.getFullYear() + '/' + (today.getWeek(1) + 1))).
                             transaction(incrementFunction);
 
                     // on complete
@@ -91,11 +95,11 @@ angular.module('serceControllers', [])
                     'https://serce.firebaseio.com/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1),
                     'https://serce.firebaseio.com/statistics/days/'   + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate(),
                     'https://serce.firebaseio.com/statistics/weeks/'  + today.getFullYear() + '/' + (today.getWeek(1) + 1),
-                    'https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/total',
-                    'https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/years/'  + today.getFullYear(),
-                    'https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1),
-                    'https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/days/'   + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate(),
-                    'https://serce.firebaseio.com/users/' + $rootScope.uuid + '/statistics/weeks/'  + today.getFullYear() + '/' + (today.getWeek(1) + 1)
+                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/total',
+                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/years/'  + today.getFullYear(),
+                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1),
+                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/days/'   + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate(),
+                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/weeks/'  + today.getFullYear() + '/' + (today.getWeek(1) + 1)
                 ], 0, function() {
 
                 });*/
@@ -106,8 +110,11 @@ angular.module('serceControllers', [])
     };
 }])
 
-.controller('ClickedCtrl', ['$scope', function($scope) {
-    // empty controller
+.controller('ClickedCtrl', ['$scope', 'statisticsService', function($scope, statisticsService) {
+    // update short statistics
+    $scope.$on('$ionicView.enter', function() {
+        statisticsService.updateShortStatistics();
+    });
 }])
 
 .controller('StatisticsCtrl', ['$scope', function($scope) {

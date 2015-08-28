@@ -64,8 +64,8 @@
                         </ion-item>
                         <ion-item class="background-red" menu-close href="#/help">Pomóż nam</ion-item>
                         <ion-item class="background-red" menu-close href="#/alert">
-                            <span ng-if="!alert">Ustaw przypomnienie</span>
-                            <span ng-if="alert">Przypomnienie o {{alert | date: format: shortTime}}</span>
+                            <span ng-if="!config.alert">Ustaw przypomnienie</span>
+                            <span ng-if="config.alert">Przypomnienie o {{config.alert | date: format: shortTime}}</span>
                         </ion-item>
                         <ion-item class="background-red" menu-close href="#/contact">Kontakt</ion-item>
                         <ion-item class="background-red" menu-close href="#/about">O nas</ion-item>
