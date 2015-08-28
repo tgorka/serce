@@ -24,7 +24,7 @@ angular.module('serceControllers', [])
                 var today = new Date();
                 var incrementFunction = function(value) {
                     return {
-                        lastUser: configService.uuid,
+                        lastUser: configService.uuid(),
                         lastDate: /*Firebase.ServerValue.TIMESTAMP,*/today.toISOString(),
                         lastYear: today.getFullYear().toString(),
                         lastMonth: (today.getMonth() + 1).toString(),
@@ -49,7 +49,7 @@ angular.module('serceControllers', [])
 
                 // call user vote
                 var userRef = new Firebase('https://serce.firebaseio.com/users/' +
-                configService.uuid + '/votes/' + today.getFullYear() + '/' +
+                configService.getOrGenerateUuid() + '/votes/' + today.getFullYear() + '/' +
                 (today.getMonth() + 1) + '/' + today.getDate());
                 userRef.set(today.toISOString(), function() {
 
@@ -66,15 +66,15 @@ angular.module('serceControllers', [])
                             transaction(incrementFunction);
 
                     // user statistics
-                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/total')).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid() + '/statistics/total')).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/years/' + today.getFullYear())).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid() + '/statistics/years/' + today.getFullYear())).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1))).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid() + '/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1))).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/days/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate())).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid() + '/statistics/days/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate())).
                             transaction(incrementFunction);
-                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/weeks/' + today.getFullYear() + '/' + (today.getWeek(1) + 1))).
+                    (new Firebase('https://serce.firebaseio.com/users/' + configService.uuid() + '/statistics/weeks/' + today.getFullYear() + '/' + (today.getWeek(1) + 1))).
                             transaction(incrementFunction);
 
                     // on complete

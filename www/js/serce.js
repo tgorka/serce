@@ -67,15 +67,28 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
     //var uuid = device.uuid;
     var uuid = localStorage.getItem('uuid');
     if (!uuid) {
-        uuid = uuid.v4();
-        localStorage.setItem('uuid', uuid);
+        uuid = null;
     }
     return {
-        uuid: uuid,
+        uuid: function() {
+            return uuid
+        },
         alert: alert,
         setAlert: function(newAlert) {
             alert = newAlert;
             localStorage.setItem('alert', newAlert.toISOString());
+        },
+        setUuid: function(newUuid) {
+            uuid = newUuid;
+            localStorage.setItem('uuid', uuid);
+        },
+        getOrGenerateUuid: function() {
+            if (!uuid) {
+                var usersRef = new Firebase('https://serce.firebaseio.com/users');
+                uuid = usersRef.push().key();
+                localStorage.setItem('uuid', uuid);
+            }
+            return uuid;
         }
     }
 }])
@@ -116,20 +129,30 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
         });
     };
     var userStatistics = function() {
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            configService.uuid + '/statistics/total', 'total');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-                configService.uuid + '/statistics/years/' + today.getFullYear(),
-            'year');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            configService.uuid + '/statistics/months/' + today.getFullYear() +
+        if (configService.uuid()) {
+            updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid() + '/statistics/total', 'total');
+            updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+                    configService.uuid() + '/statistics/years/' + today.getFullYear(),
+                    'year');
+            updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid() + '/statistics/months/' + today.getFullYear() +
             '/' + (today.getMonth() + 1), 'month');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            configService.uuid + '/statistics/weeks/' + today.getFullYear() +
+            updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid() + '/statistics/weeks/' + today.getFullYear() +
             '/' + (today.getWeek(1) + 1), 'week');
-        updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-            configService.uuid + '/statistics/days/' + today.getFullYear() +
+            updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+            configService.uuid() + '/statistics/days/' + today.getFullYear() +
             '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day');
+        } else {
+            $rootScope.userStatistics = {
+                day:   0,
+                week:  0,
+                month: 0,
+                year:  0,
+                total: 0
+            };
+        }
     };
     var globalStatistics = function() {
         updateStatisticsFunction('https://serce.firebaseio.com/' +
@@ -177,10 +200,15 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
             shortStatistics();
         },
         updateUserDayStatistics: function(callback) {
-            updateToday();
-            updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
-                configService.uuid + '/statistics/days/' + today.getFullYear() +
+            if (configService.uuid()) {
+                updateToday();
+                updateUserStatisticsFunction('https://serce.firebaseio.com/users/' +
+                configService.uuid() + '/statistics/days/' + today.getFullYear() +
                 '/' + (today.getMonth() + 1) + '/' + today.getDate(), 'day', callback);
+            } else {
+                $rootScope.userStatistics.day = 0;
+                callback();
+            }
         }
     }
 }])
