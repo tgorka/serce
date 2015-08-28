@@ -121,4 +121,8 @@ angular.module('serceControllers', [])
     // TODO: implement me!!
 }])
 
+.controller('ContactCtrl', ['$scope', function($scope) {
+    // TODO: implement me!!
+}])
+
 ;

@@ -210,6 +210,15 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
                     }
                 }
             })
+            .state('contact', {
+                url: '/contact',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'html/contact.html',
+                        controller: 'ContactCtrl'
+                    }
+                }
+            })
             .state('statistics', {
                 url: '/statistics',
                 views: {
