@@ -87,22 +87,6 @@ angular.module('serceControllers', [])
 
                     $state.go('clicked');
                 });
-
-                // global statistics in sync
-                /*firebaseFunction([
-                    'https://serce.firebaseio.com/statistics/total',
-                    'https://serce.firebaseio.com/statistics/years/'  + today.getFullYear(),
-                    'https://serce.firebaseio.com/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1),
-                    'https://serce.firebaseio.com/statistics/days/'   + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate(),
-                    'https://serce.firebaseio.com/statistics/weeks/'  + today.getFullYear() + '/' + (today.getWeek(1) + 1),
-                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/total',
-                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/years/'  + today.getFullYear(),
-                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/months/' + today.getFullYear() + '/' + (today.getMonth() + 1),
-                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/days/'   + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate(),
-                    'https://serce.firebaseio.com/users/' + configService.uuid + '/statistics/weeks/'  + today.getFullYear() + '/' + (today.getWeek(1) + 1)
-                ], 0, function() {
-
-                });*/
             } else {
                 $state.go('clicked');
             }
