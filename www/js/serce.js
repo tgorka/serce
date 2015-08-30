@@ -94,7 +94,7 @@ angular.module('serce', ['ionic', 'firebase', 'serceControllers'])
 }])
 
 .factory('statisticsService', ['$rootScope', 'configService', function($rootScope, configService) {
-    var today, uuid;
+    var today;
     var updateToday = function() {
         today = new Date();
     };

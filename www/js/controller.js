@@ -25,7 +25,7 @@ angular.module('serceControllers', [])
                 var incrementFunction = function(value) {
                     return {
                         lastUser: configService.uuid(),
-                        lastDate: /*Firebase.ServerValue.TIMESTAMP,*/today.toISOString(),
+                        lastDate: /*Firebase.ServerValue.TIMESTAMP,*/today.getTime(),//today.toISOString(),
                         lastYear: today.getFullYear().toString(),
                         lastMonth: (today.getMonth() + 1).toString(),
                         lastDay: today.getDate().toString(),
@@ -51,7 +51,7 @@ angular.module('serceControllers', [])
                 var userRef = new Firebase('https://serce.firebaseio.com/users/' +
                 configService.getOrGenerateUuid() + '/votes/' + today.getFullYear() + '/' +
                 (today.getMonth() + 1) + '/' + today.getDate());
-                userRef.set(today.toISOString(), function() {
+                userRef.set(today.getTime()/*today.toISOString()*/, function() {
 
                     // global statistics
                     (new Firebase('https://serce.firebaseio.com/statistics/total')).
